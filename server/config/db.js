@@ -1,4 +1,13 @@
 const mongoose = require('mongoose');
+const dns = require('dns');
+
+// On Windows, local ISP/router DNS servers often fail on MongoDB SRV queries (querySrv ECONNREFUSED).
+// Configure Google and Cloudflare public DNS resolvers as fallback for reliable Atlas connection.
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch {
+  // Gracefully continue if environment restricts DNS setting
+}
 
 /**
  * Connect to MongoDB instance with robust error handling and diagnostics.
@@ -13,9 +22,14 @@ const connectDB = async (uri = process.env.MONGODB_URI) => {
   }
 
   try {
-    const conn = await mongoose.connect(uri, {
+    const mongooseOptions = {
       serverSelectionTimeoutMS: 5000,
-    });
+      ...(process.env.MONGODB_CERT_PATH && {
+        tlsCertificateKeyFile: process.env.MONGODB_CERT_PATH,
+      }),
+    };
+
+    const conn = await mongoose.connect(uri, mongooseOptions);
 
     if (process.env.NODE_ENV !== 'test') {
       console.log(`[Database] MongoDB Connected: ${conn.connection.host} / ${conn.connection.name}`);
