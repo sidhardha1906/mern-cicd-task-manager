@@ -1,0 +1,134 @@
+name: MERN CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # =========================================================================
+  # 1. CODE QUALITY & LINTING
+  # =========================================================================
+  lint:
+    name: Lint & Code Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            server/package-lock.json
+            client/package-lock.json
+
+      - name: Install Server Dependencies (Clean)
+        run: npm --prefix server ci
+
+      - name: Run Server ESLint
+        run: npm --prefix server run lint
+
+      - name: Install Client Dependencies (Clean)
+        run: npm --prefix client ci
+
+      - name: Run Client ESLint
+        run: npm --prefix client run lint
+
+  # =========================================================================
+  # 2. BACKEND API TESTS
+  # =========================================================================
+  test-backend:
+    name: Backend API Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Server Dependencies
+        run: npm --prefix server ci
+
+      - name: Run Backend Test Suite (Supertest & Jest with In-Memory DB)
+        run: npm --prefix server test
+        env:
+          NODE_ENV: test
+
+  # =========================================================================
+  # 3. FRONTEND TESTS & PRODUCTION BUILD
+  # =========================================================================
+  test-and-build-frontend:
+    name: Frontend Tests & Vite Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install Client Dependencies
+        run: npm --prefix client ci
+
+      - name: Run Frontend Tests (Vitest & React Testing Library)
+        run: npm --prefix client test
+
+      - name: Build Frontend Production Bundle
+        run: npm --prefix client run build
+        env:
+          VITE_API_URL: https://mern-cicd-task-manager-api.onrender.com/api
+
+  # =========================================================================
+  # 4. DEPLOYMENT TRIGGER & VERIFICATION (Runs only on push to main)
+  # =========================================================================
+  deploy:
+    name: Production Deployment Trigger
+    needs: [lint, test-backend, test-and-build-frontend]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deployment Instructions & Provider Trigger
+        run: |
+          echo "============================================================"
+          echo " CI CHECKS PASSED: Ready for Production Deployment"
+          echo " Branch: ${{ github.ref_name }}"
+          echo " Commit: ${{ github.sha }}"
+          echo "============================================================"
+          echo "Frontend: Automatically deployed via Vercel GitHub Integration"
+          echo "Backend:  Automatically deployed via Render GitHub Integration"
+          echo "Database: Hosted on MongoDB Atlas"
+
+      - name: Trigger Render Backend Webhook (Optional Hook)
+        if: env.RENDER_DEPLOY_HOOK != ''
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          echo "Triggering Render deployment webhook..."
+          curl -s -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" || echo "Webhook trigger completed."
