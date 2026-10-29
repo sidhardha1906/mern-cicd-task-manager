@@ -1,6 +1,6 @@
 # MERN Stack CI/CD Task Manager
 
-[![MERN CI/CD Pipeline](https://github.com/placeholder-user/mern-cicd-task-manager/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/placeholder-user/mern-cicd-task-manager/actions/workflows/ci-cd.yml)
+[![MERN CI/CD Pipeline](https://github.com/sidhardha1906/mern-cicd-task-manager/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/sidhardha1906/mern-cicd-task-manager/actions/workflows/ci-cd.yml)
 [![Node.js Version](https://img.shields.io/badge/Node.js-20.x%20LTS-green.svg)](https://nodejs.org/)
 [![React Version](https://img.shields.io/badge/React-18.x-61dafb.svg)](https://react.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -15,7 +15,7 @@ Designed and engineered for a final-year B.Tech Computer Science & Engineering c
 
 - **Live Frontend (Vercel)**: `https://<YOUR_VERCEL_PROJECT>.vercel.app` *(Replace with your live URL upon deployment)*
 - **Backend API Health Check (Render)**: `https://<YOUR_RENDER_SERVICE>.onrender.com/api/health` *(Replace with your live URL upon deployment)*
-- **GitHub Repository**: `https://github.com/<YOUR_GITHUB_USERNAME>/mern-cicd-task-manager`
+- **GitHub Repository**: `https://github.com/sidhardha1906/mern-cicd-task-manager`
 - **Demonstration Video**: `https://drive.google.com/file/d/<YOUR_FILE_ID>/view?usp=sharing` *(Follow [DEMO_RECORDING_GUIDE.md](file:///c:/Users/chand/Desktop/mern-cicd-task-manager/DEMO_RECORDING_GUIDE.md))*
 
 ---
@@ -220,7 +220,7 @@ Clone the repository and install all dependencies:
 
 ```powershell
 # 1. Clone repository
-git clone https://github.com/<YOUR_GITHUB_USERNAME>/mern-cicd-task-manager.git
+git clone https://github.com/sidhardha1906/mern-cicd-task-manager.git
 
 # 2. Enter workspace root
 cd mern-cicd-task-manager

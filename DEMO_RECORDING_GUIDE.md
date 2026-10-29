@@ -82,7 +82,7 @@ Project Title:        MERN Stack CI/CD Task Management Application
 Student Name:         Chandra Shekar
 Branch / Semester:    B.Tech Computer Science and Engineering / Final Year
 
-GitHub Repository:    https://github.com/<YOUR_GITHUB_USERNAME>/mern-cicd-task-manager
+GitHub Repository:    https://github.com/sidhardha1906/mern-cicd-task-manager
 Live Frontend URL:    https://<YOUR_PROJECT_NAME>.vercel.app
 Backend Health URL:   https://<YOUR_API_NAME>.onrender.com/api/health
 Demo Video (Drive):   https://drive.google.com/file/d/<YOUR_FILE_ID>/view?usp=sharing
